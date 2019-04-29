@@ -1,0 +1,71 @@
+table {
+	margin: 20px 0 20px 0;
+	border-collapse:collapse;
+	border:1px solid #ccc;
+    box-sizing: border-box;
+    width:100%;
+    color: #778;
+
+}
+
+th{	
+
+    padding: 0.7em 1em 0.7em 1.15em;
+    font-size: 1em;
+    text-align: center;
+    border-top:1px solid #E0E1E3;
+    border-left:1px solid #E0E1E3;
+    border-bottom:1px solid #E0E1E3;
+    background-image: linear-gradient(#fff,#ddd);
+    overflow:hidden;
+    box-sizing: border-box;
+}
+
+td {
+	padding: 0.7em 1em 0.7em 1.15em;
+	font-size: 1em;
+	text-align: center;
+	border-right:1px solid #E3E4E6; 
+	border-left :1px solid #E3E4E6;
+	overflow:hidden;
+	box-sizing: border-box;
+	border-bottom:1px solid #E0E1E3;
+}
+
+#wordsApp{
+    padding:40px;
+}
+
+#titleZone{
+    margin-bottom: 4px; 
+    font-size: 24px; 
+    color: rgb(109, 143, 164); 
+    font-weight: 900; 
+    display: block;
+    user-select:none;
+}
+
+.subTitle{
+    padding:15px 0 5px 42px;
+    color: rgb(48, 94, 122);    
+}
+
+body {
+    font-family: Roboto, Arial, Menlo, Consolas, monospace !important;
+    color: #444;
+}
+
+.icon{
+color: rgb(109, 143, 164); 
+cursor:pointer;
+
+}
+
+.icon label,.icon i{
+font-size:24px;
+}
+
+.icon:hover{
+color: rgb(48, 94, 122); 
+}
+

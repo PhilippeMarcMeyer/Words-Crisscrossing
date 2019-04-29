@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Words CrissCrossing</title>
+		<link rel="icon" href="pi.ico" />
+		<link href='https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,500">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+		<link rel="stylesheet" href="./words.css">
+	</head>
+	 
+	<body>
+		<div id="wordsApp">
+			<p id="titleZone"><i class="far fa-copy"></i> &nbsp; {{welcome}}</i></p>
+			<p class="subTitle">{{message}}</p>
+			<table>
+				<tr>
+					<th style="width:20px">&nbsp;</th>
+					<th>Filename</th>
+					<th>Preview</th>
+					<th>Words Count (unique)</th>
+					<th>Criscrossing %</th>
+				</tr>
+				<tr v-for="item in items">
+					<td class="icon"><label :for="'file-'+item.id" class="fas fa-file-import"></label>
+						<input type="file" accept=".txt"  @change="previewFiles(item,item.id,event)" name="file" :id="'file-'+item.id"  style="display:none;">
+					</td>
+					<td v-if="!item.filename">{{defaultFile}}</td><td v-else>{{item.filename}}</td>
+					<td>{{item.preview}}</td>
+					<td>{{item.wordsUniqueCount}}</td>
+					<td>{{item.criscrossing}}</td>
+				</tr>
+				<tr class="footer">
+						<td class="icon"><i class="fas fa-poll" @click="processFiles()"></i>
+						</td>
+						<td class='result' colspan=4>{{results}}</td>
+					</tr>
+			</table>
+		</div>
+		<!-- scripts -->
+<!-- Load polyfills to support older browsers -->
+<script src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CMutationObserver" crossorigin="anonymous"></script>
+
+<!-- Load Vue followed by BootstrapVue -->
+<script src="//unpkg.com/vue@latest/dist/vue.min.js"></script>
+<script type="text/javascript" src="words.js"></script>
+
+	</body>
+</html>
