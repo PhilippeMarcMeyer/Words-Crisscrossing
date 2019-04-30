@@ -1,4 +1,15 @@
 
+var database;
+var fireUser = null;
+
+var DefaultRules = {
+ MinLength : 3,
+ StopWords : [],
+ substantives : [],
+ subSelectors : []
+}
+
+var rules = DefaultRules;
 
 var wordsApp = new Vue({
     el: '#wordsApp',
@@ -169,7 +180,7 @@ function index (text,minLength){
   };
 
    firebase.initializeApp(config);
-   
+     database = firebase.database();
    
 	document.querySelector("#btnLogout").addEventListener("click", function(){
 		var auth = firebase.auth();
@@ -188,7 +199,7 @@ function index (text,minLength){
 			}else{
 				document.querySelector("#userMessage").innerHTML = "You are logged as "+user.email+"&nbsp;&nbsp;&nbsp;";
 			}
-			
+			var refLatin = database.ref("Latin");
 		}else{
 			fireUser = null;
 			document.querySelector(".whenOn").classList.add("hide");
@@ -204,9 +215,10 @@ document.querySelector("#googleAuth").addEventListener("click", function () {
 	 // This gives you a Google Access Token.
 	 var token = result.credential.accessToken;
 	 // The signed-in user info.
+	 var getData = true;
 	 var user = result.user;
 	 	if(user){
-		fireUser = user;
+			fireUser = user;
 			document.querySelector(".whenOn").classList.remove("hide");
 			document.querySelector(".whenOff").classList.add("hide");
 		if(user.displayName){
@@ -215,12 +227,45 @@ document.querySelector("#googleAuth").addEventListener("click", function () {
 				document.querySelector("#userMessage").innerHTML = "You are logged as "+user.email+"&nbsp;&nbsp;&nbsp;";
 		}
 		}else{
+			getData = false;
 			fireUser = null;
 			document.querySelector(".whenOn").classList.add("hide");
 			document.querySelector(".whenOff").classList.remove("hide");
 			document.querySelector("#userMessage").innerHTML = "";
+			rules = DefaultRules;
 		}
-
+		if(getData){
+			var refLatin = database.ref("Latin");
+			 refLatin.on('value',gotDataPost,errDataPost);
+		}
 	});
 });
 
+function gotDataPost(data){
+	var obj = data.val();
+	if(obj){
+			console.log(obj);
+
+	}
+}
+
+ function errDataPost(err){
+	console.log("error in post !");
+	console.log(err);
+}
+
+/*
+function createLatin(){
+	 var refLatin = database.ref("Latin");
+	 var obj = {
+		 MinLength : 2,
+		 StopWords : stops,
+		 substantives : [],
+		 subSelectors : [{
+			 name : "1st or 2nd declension",
+			 ends : ["a","us","a1","us1","a2","us2"]
+		 }]
+	 }
+	 refLatin.push(obj);
+}
+*/
