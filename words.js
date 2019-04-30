@@ -158,3 +158,69 @@ function index (text,minLength){
 	}
 	return output;
 }
+
+  var config = {
+    apiKey: "AIzaSyCdE3mJVWexNDOh83rNA5S29N2KK5gcy-c",
+    authDomain: "first-firebase-project-5ada0.firebaseapp.com",
+    databaseURL: "https://first-firebase-project-5ada0.firebaseio.com",
+    projectId: "first-firebase-project-5ada0",
+    storageBucket: "first-firebase-project-5ada0.appspot.com",
+    messagingSenderId: "770548806963"
+  };
+
+   firebase.initializeApp(config);
+   
+   
+	document.querySelector("#btnLogout").addEventListener("click", function(){
+		var auth = firebase.auth();
+		auth.signOut();
+	});
+	
+	firebase.auth().onAuthStateChanged(function(user){
+		if(user){
+			fireUser = user;
+			document.querySelector(".whenOn").classList.remove("hide");
+			document.querySelector(".whenOff").classList.add("hide");
+
+			if(user.displayName){
+				document.querySelector("#userMessage").innerHTML = "You are logged as "+user.displayName+"&nbsp;&nbsp;&nbsp;";
+
+			}else{
+				document.querySelector("#userMessage").innerHTML = "You are logged as "+user.email+"&nbsp;&nbsp;&nbsp;";
+			}
+			
+		}else{
+			fireUser = null;
+			document.querySelector(".whenOn").classList.add("hide");
+			document.querySelector(".whenOff").classList.remove("hide");
+			document.querySelector("#userMessage").innerHTML = "";
+		}
+	});
+document.querySelector("#googleAuth").addEventListener("click", function () {
+	var provider = new firebase.auth.GoogleAuthProvider();
+	provider.addScope('profile');
+	provider.addScope('email');
+	firebase.auth().signInWithPopup(provider).then(function(result) {
+	 // This gives you a Google Access Token.
+	 var token = result.credential.accessToken;
+	 // The signed-in user info.
+	 var user = result.user;
+	 	if(user){
+		fireUser = user;
+			document.querySelector(".whenOn").classList.remove("hide");
+			document.querySelector(".whenOff").classList.add("hide");
+		if(user.displayName){
+				document.querySelector("#userMessage").innerHTML = "You are logged as "+user.displayName+"&nbsp;&nbsp;&nbsp;";
+		}else{
+				document.querySelector("#userMessage").innerHTML = "You are logged as "+user.email+"&nbsp;&nbsp;&nbsp;";
+		}
+		}else{
+			fireUser = null;
+			document.querySelector(".whenOn").classList.add("hide");
+			document.querySelector(".whenOff").classList.remove("hide");
+			document.querySelector("#userMessage").innerHTML = "";
+		}
+
+	});
+});
+

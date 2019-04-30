@@ -14,6 +14,15 @@
 	</head>
 	 
 	<body>
+	<div class="auth">
+		<span class="iconAuth" title="Authenticate as Google user">
+			<i class="fab fa-google whenOff" id="googleAuth" aria-hidden="true"></i>
+		</span>
+		<span class="whenOn" id="userMessage"></span>
+		<span class="iconAuth" title="log out but come back soon !">
+			<i class="whenOn fas fa-sign-out-alt" id="btnLogout" aria-hidden="true"></i>
+		</span>
+	</div>
 		<div id="wordsApp">
 			<p id="titleZone"><i class="far fa-copy"></i> &nbsp; {{welcome}}</i></p>
 			<p class="subTitle">{{message}}</p>
@@ -47,6 +56,9 @@
 
 <!-- Load Vue -->
 <script src="//unpkg.com/vue@latest/dist/vue.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase-database.js"></script>
 <script type="text/javascript" src="words.js"></script>
 
 	</body>
