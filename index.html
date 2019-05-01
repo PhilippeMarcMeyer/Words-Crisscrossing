@@ -31,6 +31,7 @@
 					<th style="width:20px">&nbsp;</th>
 					<th>Filename</th>
 					<th>Preview</th>
+					<th>Words Count</th>
 					<th>Words Count (unique)</th>
 					<th>Criscrossing %</th>
 				</tr>
@@ -40,15 +41,17 @@
 					</td>
 					<td v-if="!item.filename">{{defaultFile}}</td><td v-else>{{item.filename}}</td>
 					<td>{{item.preview}}</td>
+					<td>{{item.wordsCount}}</td>
 					<td>{{item.wordsUniqueCount}}</td>
 					<td>{{item.criscrossing}}</td>
 				</tr>
 				<tr class="footer">
 						<td class="icon"><i class="fas fa-poll" @click="processFiles()"></i>
 						</td>
-						<td class='result' colspan=4>{{results}}</td>
+						<td class='result' colspan=5>{{results}}</td>
 					</tr>
 			</table>
+			<i class="fas fa-info-circle iconAuth"></i><span class="subTitle">{{rulesInfo}}</span>
 		</div>
 		<!-- scripts -->
 <!-- Load polyfills to support older browsers -->

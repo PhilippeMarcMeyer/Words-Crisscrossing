@@ -1,6 +1,7 @@
 
 var database;
 var fireUser = null;
+var refLatin = null;
 
 var DefaultRules = {
  MinLength : 3,
@@ -15,17 +16,18 @@ var wordsApp = new Vue({
     el: '#wordsApp',
     data: {
       items : [
-        {id:0, filename: '', wordsUniqueCount: 0,criscross: 0,criscrossing: '',file:null,content:null,preview :'', keywords:[]},
-        {id:1, filename: '',  wordsUniqueCount: 0,criscross: 0,criscrossing: '',file:null,content:null,preview :'' , keywords:[]}
+        {id:0, filename: '', wordsCount: 0, wordsUniqueCount: 0,criscross: 0,criscrossing: '',file:null,content:null,preview :'', keywords:[],entries:{}},
+        {id:1, filename: '', wordsCount: 0,  wordsUniqueCount: 0,criscross: 0,criscrossing: '',file:null,content:null,preview :'' , keywords:[],entries:{}}
       ],
       welcome:'Welcome on Words Criscrossing app  :-)',
       message: 'Please choose two text files to compare ...',
-      minWordLength : 3,
+      rules : rules,
       defaultFile : 'Select a file',
       results:'Ready to check your files !',
       matches:0,
       result:'',
       state:'non-selected',
+	  rulesInfo : ''
     },
     computed:{
         status :function(){
@@ -44,8 +46,19 @@ var wordsApp = new Vue({
                 reader.onload = function(event) { 
                     that.items[id].content = reader.result;
                     that.items[id].preview = shortenSentence(that.items[id].content.trim().replace("\r\n"," ").replace("\n"," "),60,"...");
-                    that.items[id].keywords = index(that.items[id].content,that.minWordLength);
+                    that.items[id].entries = index(that.items[id].content,that.rules);
+					that.items[id].keywords = that.items[id].entries.map(function(x){
+						return x[0];
+					});
+					
                     that.items[id].wordsUniqueCount = that.items[id].keywords.length;
+					that.items[id].wordsCount = function(){
+						let result = 0;
+						that.items[id].entries.forEach(function(x){
+							result += x[1];
+						});
+						return result;
+					}();
                     that.items[id].criscross = 0;
                     that.items[id].criscrossing = '';
                     that.setState();
@@ -133,7 +146,7 @@ var wordsApp = new Vue({
     return output;
 }
 
-function index (text,minLength){
+function index (text,rules){
 	var indexes = {};
 	var output = [];
 	var start = -1;
@@ -146,28 +159,19 @@ function index (text,minLength){
 	words.forEach(function(word){
 		if(word!=previous){
 			previous = word;
-			if(word.length >= minLength){
+			if(word.length >= rules.MinLength && rules.StopWords.indexOf(word)==-1){
 				if(!indexes[word]){
-					indexes[word] = true;
-					output.push(word);
+					indexes[word] = 1;
+					//output.push(word);
 				}
+			}
+		}else{
+			if(word.length >= rules.MinLength && rules.StopWords.indexOf(word)==-1){
+				indexes[word]++;
 			}
 		}
 	});
-	for(let i = output.length -1 ; i >=0;i--){
-		let doDelete = false;
-		if(output[i].indexOf("_") > -1){
-			doDelete = true;
-		}
-		let test = parseInt(output[i]);
-		if(!isNaN(test)){
-			doDelete = true;
-		}
-		if(doDelete){
-			output.splice(i,1);
-		}
-	}
-	return output;
+	return Object.entries(indexes);
 }
 
   var config = {
@@ -188,25 +192,31 @@ function index (text,minLength){
 	});
 	
 	firebase.auth().onAuthStateChanged(function(user){
+		var getData = true;
 		if(user){
 			fireUser = user;
 			document.querySelector(".whenOn").classList.remove("hide");
 			document.querySelector(".whenOff").classList.add("hide");
-
 			if(user.displayName){
-				document.querySelector("#userMessage").innerHTML = "You are logged as "+user.displayName+"&nbsp;&nbsp;&nbsp;";
-
+					document.querySelector("#userMessage").innerHTML = "You are logged as "+user.displayName+"&nbsp;&nbsp;&nbsp;";
 			}else{
-				document.querySelector("#userMessage").innerHTML = "You are logged as "+user.email+"&nbsp;&nbsp;&nbsp;";
+					document.querySelector("#userMessage").innerHTML = "You are logged as "+user.email+"&nbsp;&nbsp;&nbsp;";
 			}
-			var refLatin = database.ref("Latin");
 		}else{
+			getData = false;
 			fireUser = null;
 			document.querySelector(".whenOn").classList.add("hide");
 			document.querySelector(".whenOff").classList.remove("hide");
 			document.querySelector("#userMessage").innerHTML = "";
+			rules = DefaultRules;
+			wordsApp.rulesInfo = '';
+		}
+		if(getData){
+			refLatin = database.ref("Latin");
+			refLatin.on('value',gotDataPost,errDataPost);
 		}
 	});
+	
 document.querySelector("#googleAuth").addEventListener("click", function () {
 	var provider = new firebase.auth.GoogleAuthProvider();
 	provider.addScope('profile');
@@ -215,37 +225,22 @@ document.querySelector("#googleAuth").addEventListener("click", function () {
 	 // This gives you a Google Access Token.
 	 var token = result.credential.accessToken;
 	 // The signed-in user info.
-	 var getData = true;
-	 var user = result.user;
-	 	if(user){
-			fireUser = user;
-			document.querySelector(".whenOn").classList.remove("hide");
-			document.querySelector(".whenOff").classList.add("hide");
-		if(user.displayName){
-				document.querySelector("#userMessage").innerHTML = "You are logged as "+user.displayName+"&nbsp;&nbsp;&nbsp;";
-		}else{
-				document.querySelector("#userMessage").innerHTML = "You are logged as "+user.email+"&nbsp;&nbsp;&nbsp;";
-		}
-		}else{
-			getData = false;
-			fireUser = null;
-			document.querySelector(".whenOn").classList.add("hide");
-			document.querySelector(".whenOff").classList.remove("hide");
-			document.querySelector("#userMessage").innerHTML = "";
-			rules = DefaultRules;
-		}
-		if(getData){
-			var refLatin = database.ref("Latin");
-			 refLatin.on('value',gotDataPost,errDataPost);
-		}
+	 fireUser = result.user;
+
 	});
 });
+
 
 function gotDataPost(data){
 	var obj = data.val();
 	if(obj){
-			console.log(obj);
-
+			//console.log(obj);
+		var entries = Object.entries(obj);
+		
+		//var key = entries[0][0];
+		wordsApp.rules = entries[0][1];	
+		if(!rules.substantives) rules.substantives = [];
+		wordsApp.rulesInfo = 'Latin rules loaded : words minimum length is ' + wordsApp.rules.MinLength + ' and stop words list contains ' + wordsApp.rules.StopWords.length + ' entries';
 	}
 }
 
