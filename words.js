@@ -27,7 +27,8 @@ var wordsApp = new Vue({
       matches:0,
       result:'',
       state:'non-selected',
-	  rulesInfo : ''
+	  rulesInfo : '',
+	  criscrosslist : []
     },
     computed:{
         status :function(){
@@ -61,6 +62,7 @@ var wordsApp = new Vue({
 					}();
                     that.items[id].criscross = 0;
                     that.items[id].criscrossing = '';
+					that.criscrosslist = [];
                     that.setState();
                 };
                 reader.readAsText(item.file);
@@ -99,9 +101,17 @@ var wordsApp = new Vue({
             let that = this;
             let matches = 0;
             if( this.state=='selected'){
-                this.items[0].keywords.forEach(function(keyword){
-                    if(that.items[1].keywords.indexOf(keyword)!=-1){
+				this.criscrosslist = [];
+                this.items[0].entries.forEach(function(entrie){
+					let keyword = entrie[0];
+					let offset = that.items[1].keywords.indexOf(keyword);
+                    if(offset!=-1){
                         matches ++;
+						that.criscrosslist.push({
+							word:keyword,
+							nr1 : entrie[1],
+							nr2 : that.items[1].entries[offset][1]
+						});
                     }
                 })
                 this.matches = matches;
@@ -112,6 +122,7 @@ var wordsApp = new Vue({
                 let averageWordCount = (this.items[0].wordsUniqueCount + this.items[1].wordsUniqueCount)/2;              
                 that.result = matches + " matches for an average criscross of " + (100 * (matches / averageWordCount)).toFixed(2) + ' %';
                 this.setState();
+				document.querySelector("#criscross-list-zone").classList.remove("hide");
             }
         }
     }
@@ -195,8 +206,14 @@ function index (text,rules){
 		var getData = true;
 		if(user){
 			fireUser = user;
-			document.querySelector(".whenOn").classList.remove("hide");
-			document.querySelector(".whenOff").classList.add("hide");
+			document.querySelectorAll(".whenOn").forEach(
+				function(dom){
+					dom.classList.remove("hide");
+			});
+			document.querySelectorAll(".whenOff").forEach(
+				function(dom){
+					dom.classList.add("hide");
+			});
 			if(user.displayName){
 					document.querySelector("#userMessage").innerHTML = "You are logged as "+user.displayName+"&nbsp;&nbsp;&nbsp;";
 			}else{
@@ -205,8 +222,15 @@ function index (text,rules){
 		}else{
 			getData = false;
 			fireUser = null;
-			document.querySelector(".whenOn").classList.add("hide");
-			document.querySelector(".whenOff").classList.remove("hide");
+			document.querySelectorAll(".whenOn").forEach(
+				function(dom){
+					dom.classList.add("hide");
+			});
+			document.querySelectorAll(".whenOff").forEach(
+				function(dom){
+					dom.classList.remove("hide");
+			});
+
 			document.querySelector("#userMessage").innerHTML = "";
 			rules = DefaultRules;
 			wordsApp.rulesInfo = '';

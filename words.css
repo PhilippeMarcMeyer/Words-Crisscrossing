@@ -7,6 +7,9 @@ table {
     color: #778;
 
 }
+.criscross-list{
+	max-width:400px;
+}
 
 .hide{
 	display:none;
@@ -25,7 +28,16 @@ table {
 	height:32px;
 	background-color:#e5e0e9;
  }
- 
+ .criss-cross{
+	position:absolute;
+	top:2px;
+	color: rgb(48, 94, 122); 
+	opacity:0.3;
+ }
+ #criscross-list-zone{
+	 position:relative;
+	 margin-top:40px; 
+ }
 .iconAuth{
 	color: rgb(48, 94, 122);font-size: 16px;margin:1px 12px 0 12px;cursor:pointer;
 }
@@ -38,7 +50,8 @@ th{
     border-top:1px solid #E0E1E3;
     border-left:1px solid #E0E1E3;
     border-bottom:1px solid #E0E1E3;
-    background-image: linear-gradient(#fff,#ddd);
+   /* background-image: linear-gradient(#fff,#ddd);*/
+	background-color: #f5f0f9;
     overflow:hidden;
     box-sizing: border-box;
 }

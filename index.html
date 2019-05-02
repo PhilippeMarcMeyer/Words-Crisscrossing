@@ -25,7 +25,7 @@
 	</div>
 		<div id="wordsApp">
 			<p id="titleZone"><i class="far fa-copy"></i> &nbsp; {{welcome}}</i></p>
-			<p class="subTitle">{{message}}</p>
+				  <p class="subTitle">{{message}}</p>
 			<table>
 				<tr>
 					<th style="width:20px">&nbsp;</th>
@@ -52,6 +52,23 @@
 					</tr>
 			</table>
 			<i class="fas fa-info-circle iconAuth"></i><span class="subTitle">{{rulesInfo}}</span>
+			<div id="criscross-list-zone" class="hide">
+			  <i class="fas fa-circle fa-lg criss-cross" ></i>
+			  <i class="fas fa-circle fa-lg criss-cross" style="margin-left:8px;"></i>
+				<span class="subTitle">Common words list</span>
+				<table class="criscross-list" >
+					<tr>
+						<th>Word</th>
+						<th># file 1</th>
+						<th># file 2</th>
+					</tr>
+					<tr v-for="commonWord in criscrosslist">
+						<td style="text-align:left;padding-left:10px;">{{commonWord.word}}</td>
+						<td>{{commonWord.nr1}}</td>
+						<td>{{commonWord.nr2}}</td>
+					</tr>
+				</table>
+			</div>
 		</div>
 		<!-- scripts -->
 <!-- Load polyfills to support older browsers -->
